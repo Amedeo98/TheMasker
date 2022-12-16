@@ -17,28 +17,25 @@
  #define JucePlugin_Build_VST3             1
 #endif
 #ifndef  JucePlugin_Build_AU
- #define JucePlugin_Build_AU               1
+ #define JucePlugin_Build_AU               0
 #endif
 #ifndef  JucePlugin_Build_AUv3
  #define JucePlugin_Build_AUv3             0
+#endif
+#ifndef  JucePlugin_Build_RTAS
+ #define JucePlugin_Build_RTAS             0
 #endif
 #ifndef  JucePlugin_Build_AAX
  #define JucePlugin_Build_AAX              0
 #endif
 #ifndef  JucePlugin_Build_Standalone
- #define JucePlugin_Build_Standalone       1
+ #define JucePlugin_Build_Standalone       0
 #endif
 #ifndef  JucePlugin_Build_Unity
  #define JucePlugin_Build_Unity            0
 #endif
-#ifndef  JucePlugin_Build_LV2
- #define JucePlugin_Build_LV2              0
-#endif
 #ifndef  JucePlugin_Enable_IAA
  #define JucePlugin_Enable_IAA             0
-#endif
-#ifndef  JucePlugin_Enable_ARA
- #define JucePlugin_Enable_ARA             0
 #endif
 #ifndef  JucePlugin_Name
  #define JucePlugin_Name                   "TheMasker"
@@ -47,16 +44,16 @@
  #define JucePlugin_Desc                   "TheMasker"
 #endif
 #ifndef  JucePlugin_Manufacturer
- #define JucePlugin_Manufacturer           "yourcompany"
+ #define JucePlugin_Manufacturer           "Cinemystics"
 #endif
 #ifndef  JucePlugin_ManufacturerWebsite
- #define JucePlugin_ManufacturerWebsite    "www.yourcompany.com"
+ #define JucePlugin_ManufacturerWebsite    ""
 #endif
 #ifndef  JucePlugin_ManufacturerEmail
  #define JucePlugin_ManufacturerEmail      ""
 #endif
 #ifndef  JucePlugin_ManufacturerCode
- #define JucePlugin_ManufacturerCode       0x4d616e75
+ #define JucePlugin_ManufacturerCode       0x436d7978
 #endif
 #ifndef  JucePlugin_PluginCode
  #define JucePlugin_PluginCode             0x4c397667
@@ -92,7 +89,7 @@
  #define JucePlugin_VSTCategory            kPlugCategEffect
 #endif
 #ifndef  JucePlugin_Vst3Category
- #define JucePlugin_Vst3Category           "Fx"
+ #define JucePlugin_Vst3Category           "Fx|Analyzer|Dynamics|EQ"
 #endif
 #ifndef  JucePlugin_AUMainType
  #define JucePlugin_AUMainType             'aufx'
@@ -111,6 +108,21 @@
 #endif
 #ifndef  JucePlugin_CFBundleIdentifier
  #define JucePlugin_CFBundleIdentifier     com.yourcompany.TheMasker
+#endif
+#ifndef  JucePlugin_RTASCategory
+ #define JucePlugin_RTASCategory           0
+#endif
+#ifndef  JucePlugin_RTASManufacturerCode
+ #define JucePlugin_RTASManufacturerCode   JucePlugin_ManufacturerCode
+#endif
+#ifndef  JucePlugin_RTASProductId
+ #define JucePlugin_RTASProductId          JucePlugin_PluginCode
+#endif
+#ifndef  JucePlugin_RTASDisableBypass
+ #define JucePlugin_RTASDisableBypass      0
+#endif
+#ifndef  JucePlugin_RTASDisableMultiMono
+ #define JucePlugin_RTASDisableMultiMono   0
 #endif
 #ifndef  JucePlugin_AAXIdentifier
  #define JucePlugin_AAXIdentifier          com.yourcompany.TheMasker
@@ -137,26 +149,11 @@
  #define JucePlugin_IAASubType             JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_IAAName
- #define JucePlugin_IAAName                "yourcompany: TheMasker"
+ #define JucePlugin_IAAName                "Cinemystics: TheMasker"
 #endif
 #ifndef  JucePlugin_VSTNumMidiInputs
  #define JucePlugin_VSTNumMidiInputs       16
 #endif
 #ifndef  JucePlugin_VSTNumMidiOutputs
  #define JucePlugin_VSTNumMidiOutputs      16
-#endif
-#ifndef  JucePlugin_ARAContentTypes
- #define JucePlugin_ARAContentTypes        0
-#endif
-#ifndef  JucePlugin_ARATransformationFlags
- #define JucePlugin_ARATransformationFlags  0
-#endif
-#ifndef  JucePlugin_ARAFactoryID
- #define JucePlugin_ARAFactoryID           "com.yourcompany.TheMasker.factory"
-#endif
-#ifndef  JucePlugin_ARADocumentArchiveID
- #define JucePlugin_ARADocumentArchiveID   "com.yourcompany.TheMasker.aradocumentarchive.1.0.0"
-#endif
-#ifndef  JucePlugin_ARACompatibleArchiveIDs
- #define JucePlugin_ARACompatibleArchiveIDs  ""
 #endif

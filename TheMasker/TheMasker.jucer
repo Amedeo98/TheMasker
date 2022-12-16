@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="L9vGCF" name="TheMasker" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
-              cppLanguageStandard="20">
+<JUCERPROJECT id="L9vGCF" name="TheMasker" projectType="audioplug" displaySplashScreen="1"
+              jucerFormatVersion="1" cppLanguageStandard="14" pluginFormats="buildVST3"
+              pluginManufacturer="Cinemystics" pluginManufacturerCode="Cmyx"
+              pluginVST3Category="Analyzer,Dynamics,EQ">
   <MAINGROUP id="EtDrka" name="TheMasker">
     <GROUP id="{D0F8B5F3-955C-44AC-04A3-B12E30F491D6}" name="Source">
+      <GROUP id="{224B1F6F-B4C2-67BA-F881-EA7DFDFCB85F}" name="DSP">
+        <FILE id="DTkybi" name="Curve.cpp" compile="1" resource="0" file="Source/Curve.cpp"/>
+        <FILE id="r8g3ud" name="Curve.h" compile="0" resource="0" file="Source/Curve.h"/>
+        <FILE id="GeBBtO" name="DynamicEQ.cpp" compile="1" resource="0" file="Source/DynamicEQ.cpp"/>
+        <FILE id="LHzZCJ" name="DynamicEQ.h" compile="0" resource="0" file="Source/DynamicEQ.h"/>
+        <FILE id="J5e9Rp" name="FilterBank.h" compile="0" resource="0" file="Source/FilterBank.h"/>
+      </GROUP>
+      <GROUP id="{A103283F-E046-C838-ECB6-DB2C3B6D1442}" name="GUI"/>
       <FILE id="DlDhRW" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="vsNo2g" name="PluginProcessor.h" compile="0" resource="0"
