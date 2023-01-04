@@ -472,12 +472,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\Curve.cpp">
-      <Filter>TheMasker\Source\DSP</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\DynamicEQ.cpp">
-      <Filter>TheMasker\Source\DSP</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\PluginProcessor.cpp">
       <Filter>TheMasker\Source</Filter>
     </ClCompile>
@@ -2709,6 +2703,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Converters.h">
+      <Filter>TheMasker\Source\DSP</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Curve.h">
       <Filter>TheMasker\Source\DSP</Filter>
     </ClInclude>

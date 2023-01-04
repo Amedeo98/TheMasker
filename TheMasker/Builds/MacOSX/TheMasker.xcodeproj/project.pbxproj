@@ -24,10 +24,8 @@
 /* Begin PBXBuildFile section */
 		023DE68CD97CE5F68DF26FC8 /* include_juce_audio_utils.mm */ = {isa = PBXBuildFile; fileRef = A2C44D500C8E14DA024ACC7F; };
 		04D7C7D532F12393278A748A /* AudioToolbox.framework */ = {isa = PBXBuildFile; fileRef = C225CA3BBB54D373A3FE1A50; };
-		062FACC5F04C18C41CC94485 /* DynamicEQ.cpp */ = {isa = PBXBuildFile; fileRef = 6F6BC48B35F1E4A969FAF8DE; };
 		065A9A6FCD0F22C1200A8229 /* include_juce_audio_plugin_client_VST_utils.mm */ = {isa = PBXBuildFile; fileRef = 123EE397AFC75D3EE58F2A84; };
 		074F68023A8688C1675B0676 /* include_juce_audio_processors.mm */ = {isa = PBXBuildFile; fileRef = 968C19BB02B25CD2BAAB4F00; };
-		0CF705DFA656E9227DDDED2C /* Curve.cpp */ = {isa = PBXBuildFile; fileRef = FE7A24E404478617A01C70F6; };
 		152376843F561D4DA4016E4D /* CoreAudioKit.framework */ = {isa = PBXBuildFile; fileRef = 7B3E1DDC1621784853468E75; };
 		17AC6C3AE9718A5A3F776754 /* include_juce_gui_basics.mm */ = {isa = PBXBuildFile; fileRef = D257CFFAC7E40B2B0C9BE5C7; };
 		1D29306945A7E057FEFA7B3D /* include_juce_audio_basics.mm */ = {isa = PBXBuildFile; fileRef = B5304381488F358B940D323E; };
@@ -81,7 +79,6 @@
 		6300E2A1683DDAF09F8893DB /* juce_audio_formats */ /* juce_audio_formats */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_formats; path = "~/JUCE/modules/juce_audio_formats"; sourceTree = "<absolute>"; };
 		65547957D0E19129DD02E06E /* DynamicEQ.h */ /* DynamicEQ.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DynamicEQ.h; path = ../../Source/DynamicEQ.h; sourceTree = SOURCE_ROOT; };
 		68299124F0CAED2E1787343D /* include_juce_audio_plugin_client_utils.cpp */ /* include_juce_audio_plugin_client_utils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_audio_plugin_client_utils.cpp; path = ../../JuceLibraryCode/include_juce_audio_plugin_client_utils.cpp; sourceTree = SOURCE_ROOT; };
-		6F6BC48B35F1E4A969FAF8DE /* DynamicEQ.cpp */ /* DynamicEQ.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DynamicEQ.cpp; path = ../../Source/DynamicEQ.cpp; sourceTree = SOURCE_ROOT; };
 		71EC2BA4415AFC377C2811D0 /* Foundation.framework */ /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		72DBDBA6841BA36334AFBB8F /* juce_audio_basics */ /* juce_audio_basics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_basics; path = "~/JUCE/modules/juce_audio_basics"; sourceTree = "<absolute>"; };
 		79A68C514B75DD0EBABB363B /* juce_audio_devices */ /* juce_audio_devices */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_devices; path = "~/JUCE/modules/juce_audio_devices"; sourceTree = "<absolute>"; };
@@ -112,8 +109,8 @@
 		F8373308981FC31D170EC5E1 /* RecentFilesMenuTemplate.nib */ /* RecentFilesMenuTemplate.nib */ = {isa = PBXFileReference; lastKnownFileType = file.nib; name = RecentFilesMenuTemplate.nib; path = RecentFilesMenuTemplate.nib; sourceTree = SOURCE_ROOT; };
 		F953CAB981AB6A2971FE6BBD /* JucePluginDefines.h */ /* JucePluginDefines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JucePluginDefines.h; path = ../../JuceLibraryCode/JucePluginDefines.h; sourceTree = SOURCE_ROOT; };
 		FA46FAF27EFDB7A435EEE114 /* include_juce_gui_extra.mm */ /* include_juce_gui_extra.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_gui_extra.mm; path = ../../JuceLibraryCode/include_juce_gui_extra.mm; sourceTree = SOURCE_ROOT; };
+		FC17C093B28B7171EE11A7C0 /* Converters.h */ /* Converters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Converters.h; path = ../../Source/Converters.h; sourceTree = SOURCE_ROOT; };
 		FE4832913A77C7180875171A /* PluginProcessor.cpp */ /* PluginProcessor.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PluginProcessor.cpp; path = ../../Source/PluginProcessor.cpp; sourceTree = SOURCE_ROOT; };
-		FE7A24E404478617A01C70F6 /* Curve.cpp */ /* Curve.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Curve.cpp; path = ../../Source/Curve.cpp; sourceTree = SOURCE_ROOT; };
 		FEB297C51AB511F14A96BA23 /* include_juce_dsp.mm */ /* include_juce_dsp.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_dsp.mm; path = ../../JuceLibraryCode/include_juce_dsp.mm; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -213,9 +210,8 @@
 		C417B357FA98247A076CBB5C /* DSP */ = {
 			isa = PBXGroup;
 			children = (
-				FE7A24E404478617A01C70F6,
+				FC17C093B28B7171EE11A7C0,
 				BC00DC4008269BA7245498D8,
-				6F6BC48B35F1E4A969FAF8DE,
 				65547957D0E19129DD02E06E,
 				E3883607704087702411B13C,
 			);
@@ -414,8 +410,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0CF705DFA656E9227DDDED2C,
-				062FACC5F04C18C41CC94485,
 				B4E821CD8D3222DFFAD39A2B,
 				29E4A2DD91B2264E41BD619E,
 				1D29306945A7E057FEFA7B3D,
@@ -464,7 +458,7 @@
 		1FAB9333DAB94952F11A79EE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				CODE_SIGN_IDENTITY = "";
@@ -514,7 +508,7 @@
 		65E580E9384BF4720E606B41 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				CODE_SIGN_IDENTITY = "";
@@ -569,7 +563,7 @@
 		7BF4B4AB1F39975F3718D29C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				CODE_SIGN_IDENTITY = "";
@@ -618,7 +612,7 @@
 		8CA4A4308583B7111380DABD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				CODE_SIGN_IDENTITY = "";

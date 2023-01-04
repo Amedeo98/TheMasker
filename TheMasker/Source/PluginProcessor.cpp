@@ -36,25 +36,32 @@ TheMaskerAudioProcessor::TheMaskerAudioProcessor()
     parameters.addParameterListener(NAME_IN, this);
     parameters.addParameterListener(NAME_OUT, this);
     parameters.addParameterListener(NAME_SC, this);
+
+    //state.state = juce::ValueTree(JucePlugin_Name);
+
 }
 
 TheMaskerAudioProcessor::~TheMaskerAudioProcessor()
 {
+    //Analyser.stopThread
 }
 
-void TheMaskerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+
+void TheMaskerAudioProcessor::prepareToPlay (double newSampleRate, int newSamplesPerBlock)
 {
-    frequencies = getFrequencies(npoints, minFreq, maxFreq);
-    dynEQ.prepareToPlay(frequencies, nfilts);
+    sampleRate = newSampleRate;
     /*
-    auxBuffer.setSize(1, samplesPerBlock);
+    auxBuffer.setSize(1, newSamplesPerBlock);
     */
+    getFrequencies();
+    conv = Converter();
+    dynEQ.prepareToPlay(frequencies, sampleRate, getTotalNumInputChannels(), getTotalNumOutputChannels(), newSamplesPerBlock, conv);
 }
 
 void TheMaskerAudioProcessor::releaseResources()
 {
-    // When playback stops, you can use this as an opportunity to free up any
-    // spare memory, etc.
+    dynEQ.releaseResources();
+   //Analyser.stopThread
     //auxBuffer.setSize(0, 0);
 
 }
@@ -95,7 +102,7 @@ void TheMaskerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
-    /*
+    
     auto numSamples = buffer.getNumSamples();
 
     auto mainBuffer = getBusBuffer(buffer, true, 0);
@@ -103,19 +110,10 @@ void TheMaskerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
 
     auxBuffer.clear();
 
-    */
-
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
+    
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-
-    /*
      {
         const AudioBuffer<float>& scSource = scBuffer.getNumChannels() ? scBuffer : mainBuffer;
         const int numScChannels = scSource.getNumChannels();
@@ -123,23 +121,12 @@ void TheMaskerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
         for (int ch = 0; ch < numScChannels; ++ch)
             auxBuffer.addFrom(0, 0, scSource, ch, 0, numSamples, 1 / numScChannels);
     }
-    */
+    
+ /*   juce::dsp::AudioBlock<float>              ioBuffer(buffer);
+    juce::dsp::ProcessContextReplacing<float> context(ioBuffer);
+    filter.process(context);*/
 
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    {
-        auto* channelData = buffer.getWritePointer (channel);
-
-        // ..do something to the data...
-    }
-
-    //compressor.processBlock(mainBuffer, auxBuffer);
+    dynEQ.processBlock(mainBuffer, auxBuffer);
 }
 
 
@@ -196,18 +183,19 @@ void TheMaskerAudioProcessor::setStateInformation (const void* data, int sizeInB
     
 }
 
-float* getFrequencies(int npoints, float minFreq, float maxFreq) {
-    float* freqs = new float[npoints];
-    float* barks = new float[npoints];
-    float maxbark = hz2bark(maxFreq);
-    float minbark = hz2bark(minFreq);
+
+
+std::vector<float> TheMaskerAudioProcessor::getFrequencies() {
+    frequencies.resize(npoints);
+    float maxbark = conv.hz2bark(maxFreq);
+    float minbark = conv.hz2bark(minFreq);
     float step_bark = (maxbark - minbark) / (npoints - 1);
     for (int i = 0; i < npoints; ++i){
-        barks[i] = minbark + step_bark * i;
-        freqs[i] = bark2hz(barks[i]);
+        frequencies[i] = conv.bark2hz(minbark + step_bark * i);
     }
-    return freqs;
+    return frequencies;
 }
+
 
 
 

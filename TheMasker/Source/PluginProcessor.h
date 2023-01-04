@@ -11,7 +11,7 @@
 #include <JuceHeader.h>
 #include "DynamicEQ.h"
 #include "Converters.h"
-
+#include "FilterCascade.h"
 
 
 
@@ -24,8 +24,10 @@
 #define NAME_OUT "outGain"
 #define NAME_SC "scGain"
 
-class TheMaskerAudioProcessor  : public juce::AudioProcessor , public AudioProcessorValueTreeState::Listener
-                           
+
+
+class TheMaskerAudioProcessor : public juce::AudioProcessor, public AudioProcessorValueTreeState::Listener
+
 {
 public:
     //==============================================================================
@@ -33,17 +35,16 @@ public:
     ~TheMaskerAudioProcessor() override;
 
     //==============================================================================
-    void prepareToPlay (double sampleRate, int samplesPerBlock) override;
+    void prepareToPlay(double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
 
-   #ifndef JucePlugin_PreferredChannelConfigurations
-    bool isBusesLayoutSupported (const BusesLayout& layouts) const override;
-   #endif
+#ifndef JucePlugin_PreferredChannelConfigurations
+    bool isBusesLayoutSupported(const BusesLayout& layouts) const override;
+#endif
 
-    void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
+    void processBlock(juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
 
     void parameterChanged(const String& paramID, float newValue) override;
-
 
     //==============================================================================
     juce::AudioProcessorEditor* createEditor() override;
@@ -65,28 +66,32 @@ public:
     void changeProgramName(int index, const juce::String& newName) override {};
 
     //==============================================================================
-    void getStateInformation (juce::MemoryBlock& destData) override;
-    void setStateInformation (const void* data, int sizeInBytes) override;
-    
+    void getStateInformation(juce::MemoryBlock& destData) override;
+    void setStateInformation(const void* data, int sizeInBytes) override;
+
     //==============================================================================
-    float* getFrequencies(int npoints, float minFreq, float maxFreq);
+    std::vector<float> getFrequencies();
+
+    
 
 
 
 private:
     AudioProcessorValueTreeState parameters;
     DynamicEQ dynEQ;
+    
+    int sampleRate = 0;
 
-    // parametri Shared
-    int npoints = 512;
-    int nfilts = 32;
-    int maxFreq = 22000;
-    int minFreq = 20;
-    float* frequencies;
+    Converter conv;
 
-
+    std::vector<float> frequencies;
+    AudioBuffer<float> auxBuffer;
 
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TheMaskerAudioProcessor)
 };
+
+
+
+
