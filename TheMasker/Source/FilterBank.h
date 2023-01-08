@@ -28,7 +28,7 @@ public:
     ~FilterBank() {}
 
 
-    std::vector<float> centerF = {};
+    std::vector<float> centerF ;
 
     std::vector<float> getFrequencies() {
         return centerF;
@@ -46,20 +46,22 @@ public:
         return conv;
     }
 
-    FilterBank getFilterBank(std::vector<float> freqs) {
+
+
+    FilterBank getFilterBank(vector<float>& freqs) {
         const int memorySize = npoints / nfilts;
         //auto interp = GenericInterpolator< LinearInterpolator, memorySize >::GenericInterpolator();
-        LagrangeInterpolator interp;
+        //LagrangeInterpolator interp;
 
         //int npts = freqs->size();
-        frequencies = &freqs;
+        frequencies = freqs;
         centerF.resize(nfilts);
         values.resize(nfilts,vector<float>(npoints));
         int nb = nfilts;
-        float low = conv.hz2bark(*frequencies->begin());
-        float high =  conv.hz2bark(*frequencies->end());
+        float low = conv.hz2bark(*frequencies.begin());
+        float high =  conv.hz2bark(*frequencies.end());
         float bw = (high - low) / (nfilts + 1);
-        vector<float> centerF = conv.linspace(1.f, (float)nfilts, nfilts);
+        centerF = conv.linspace(1.f, (float)nfilts, nfilts);
         FloatVectorOperations::multiply(centerF.data(), bw, nfilts);
         FloatVectorOperations::add(centerF.data(), low, nfilts);
 
@@ -68,14 +70,14 @@ public:
         FloatVectorOperations::add(infr.data(), -bw, nfilts);
         FloatVectorOperations::add(supr.data(), bw, nfilts);
         
-        for (int i : centerF) {
+        for (int i = 0; ++i < centerF.size();) {
             infr[i] = conv.bark2hz(infr[i]);
             supr[i] = conv.bark2hz(supr[i]);
             centerF[i] = conv.bark2hz(centerF[i]);
         }
 
-        infr[0] = (float)*frequencies->begin();
-        supr[supr.size()-1] = (float)*frequencies->end();
+        infr[0] = (float)*frequencies.begin();
+        supr[supr.size()-1] = (float)*frequencies.end();
         int m = 1;
         vector<float> frequencies = (vector<float>) *frequencies.data();
 
@@ -98,7 +100,7 @@ public:
                 partOfFreqs[i] = frequencies[il + i];
             }
             //copy(frequencies.at(il), frequencies.at(ih), partOfFreqs);
-            buffer = interpolateYvector(xw, yw, partOfFreqs,0);
+            buffer = interpolateYvector(xw, yw, partOfFreqs, 0);
             values[b] = buffer;
             //copy(buffer.at(0), buffer.at(nfilts-1), std::back_inserter(values[b][]));
 
@@ -114,6 +116,8 @@ public:
             }*/
         }
 
+        //values = newValues;
+
         return *this;
     }
 
@@ -122,7 +126,7 @@ public:
 
 
 private:
-    std::vector<float>* frequencies;
+    vector<float> frequencies;
     vector<vector<float>> values;
     Converter conv;
 
@@ -135,7 +139,7 @@ private:
         return minDistIndex;
     }
 
-    vector< float > interp1(vector< float >& x, vector< float >& y, vector< float >& x_new)
+    /*vector< float > interp1(vector< float >& x, vector< float >& y, vector< float >& x_new)
     {
         vector< float > y_new;
         y_new.reserve(x_new.size());
@@ -184,7 +188,7 @@ private:
         }
 
         return idx;
-    }
+    }*/
 
 
     vector<float>interpolateYvector(vector<float>xData, vector<float>yData, vector<float>xx, bool extrapolate)

@@ -41,6 +41,19 @@ public:
 
     };
 
+    vector<float> mXv_mult(vector<vector<float>> in1, vector<float> in2) {
+        
+        vector<float> res;
+        size_t length = in1.size();
+        res.resize(length);
+        for (int i = 0; ++i < length;) {
+            for (int k = 0; ++k < in2.size();) {
+                res[i] = res[i] + in1[i][k] * in2[k];
+            }
+        }
+        return res;
+    }
+
     template <typename T>
     vector<T> linspace(T a, T b, size_t N) {
         T h = (b - a) / static_cast<T>(N - 1);

@@ -17,7 +17,6 @@ using namespace std;
 #include "FilterBank.h"
 #include "Converters.h"
 #include "Analyser.h"
-#include <iostream>
 
 
 
@@ -187,31 +186,37 @@ private:
         float fbbdb = 26.0;
         float maxbark = conv.hz2bark(maxF);
         float alphaScaled = spread_exp / 20.f;
-        vector<float> spreadFuncBarkdB;
-        spreadFuncBarkdB.resize(2 * nfilts);
+        vector<float> spreadFuncBarkdB(2 * nfilts);
+        //spreadFuncBarkdB.resize(2 * nfilts);
         spreadingMtx.resize(nfilts, vector<float>(nfilts));
-        vector<float> spreadFuncBarkVoltage(spreadFuncBarkdB);
+        vector<float> spreadFuncBarkVoltage(2 * nfilts);
         vector<float> ascendent = conv.linspace(-maxbark * fbdb, -2.5f, nfilts);
         FloatVectorOperations::add(ascendent.data(), -fadB, nfilts);
         vector<float> descendent = conv.linspace(1.0f ,-maxbark * fbbdb, nfilts);
         FloatVectorOperations::add(descendent.data(), -fadB, nfilts);
-        move(ascendent.begin(), ascendent.end(), std::back_inserter(spreadFuncBarkdB));
-        move(descendent.begin(), descendent.end(), std::back_inserter(spreadFuncBarkdB));
-        FloatVectorOperations::multiply(spreadFuncBarkdB.data(), alphaScaled, nfilts);
-
+        copy(ascendent.begin(), ascendent.end(), spreadFuncBarkdB.begin());
+        copy(descendent.begin(), descendent.end(), spreadFuncBarkdB.at(nfilts));
+        
+        FloatVectorOperations::multiply(spreadFuncBarkdB.data(), alphaScaled, 2 * nfilts);
+        for (int i = 0; ++i < 2*nfilts;) 
+        {
+            spreadFuncBarkVoltage[i] = std::pow(10.0f, spreadFuncBarkdB.at(i));
+            //spreadFuncBarkVoltage[i + nfilts] = std::pow(10.0f, spreadFuncBarkdB[i + nfilts]);
+        }
         for (int i = 0; i++ < nfilts;) {
-            spreadFuncBarkVoltage[i] = std::pow(10.0f, spreadFuncBarkdB[i]);
-            spreadFuncBarkVoltage[i+nfilts] = std::pow(10.0f, spreadFuncBarkdB[i+nfilts]);
-            vector<float> temp[nfilts];
+           
+            vector<float> temp(nfilts);
             vector<float>::const_iterator first = spreadFuncBarkVoltage.begin() + nfilts - i - 1;
-            vector<float>::const_iterator last = spreadFuncBarkVoltage.begin() + 2 * nfilts - i - 2;
-
-            temp->assign(first, last);
-            for (int j = 0; j++ < nfilts;)
+            vector<float>::const_iterator last = spreadFuncBarkVoltage.begin() + 2 * nfilts - i - 1;
+                
+            //temp->assign(first, last);
+            copy(first, last, temp);
+            /*for (int j = 0; ++j < nfilts;)
             {
-                spreadingMtx[j,i] = temp[j];
-            }
-            temp->clear();
+                spreadingMtx[i] = temp;
+            }*/
+            copy(temp.begin(), temp.end(), spreadingMtx.at(i));
+            //temp.~vector;
         }
 
 
