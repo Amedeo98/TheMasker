@@ -50,19 +50,20 @@ TheMaskerAudioProcessor::~TheMaskerAudioProcessor()
 void TheMaskerAudioProcessor::prepareToPlay (double newSampleRate, int newSamplesPerBlock)
 {
     sampleRate = newSampleRate;
-    /*
-    auxBuffer.setSize(1, newSamplesPerBlock);
-    */
+    
+    auxBuffer.setSize(2, newSamplesPerBlock);
+    
     getFrequencies();
     conv = Converter();
     dynEQ.prepareToPlay(frequencies, sampleRate, getTotalNumInputChannels(), getTotalNumOutputChannels(), newSamplesPerBlock, conv);
+
 }
 
 void TheMaskerAudioProcessor::releaseResources()
 {
     dynEQ.releaseResources();
    //Analyser.stopThread
-    //auxBuffer.setSize(0, 0);
+    auxBuffer.setSize(0, 0);
 
 }
 
@@ -111,20 +112,18 @@ void TheMaskerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     auxBuffer.clear();
 
     
-    for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
-        buffer.clear (i, 0, buffer.getNumSamples());
+    for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i) {
+        buffer.clear(i, 0, buffer.getNumSamples());
+    }
+     
+    const AudioBuffer<float>& scSource = scBuffer.getNumChannels() ? scBuffer : mainBuffer;
+    const int numScChannels = scSource.getNumChannels();
 
-     {
-        const AudioBuffer<float>& scSource = scBuffer.getNumChannels() ? scBuffer : mainBuffer;
-        const int numScChannels = scSource.getNumChannels();
-
-        for (int ch = 0; ch < numScChannels; ++ch)
-            auxBuffer.addFrom(0, 0, scSource, ch, 0, numSamples, 1 / numScChannels);
+    for (int ch = 0; ch < numScChannels; ++ch) {
+        auxBuffer.addFrom(ch, 0, scSource, ch, 0, numSamples, 1 / numScChannels);
     }
     
- /*   juce::dsp::AudioBlock<float>              ioBuffer(buffer);
-    juce::dsp::ProcessContextReplacing<float> context(ioBuffer);
-    filter.process(context);*/
+
 
     dynEQ.processBlock(mainBuffer, auxBuffer);
 }

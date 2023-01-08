@@ -48,7 +48,7 @@ public:
 
 
 
-    FilterBank getFilterBank(vector<float>& freqs) {
+    FilterBank getFilterBank(vector<float> freqs) {
         const int memorySize = npoints / nfilts;
         //auto interp = GenericInterpolator< LinearInterpolator, memorySize >::GenericInterpolator();
         //LagrangeInterpolator interp;
@@ -58,30 +58,32 @@ public:
         centerF.resize(nfilts);
         values.resize(nfilts,vector<float>(npoints));
         int nb = nfilts;
-        float low = conv.hz2bark(*frequencies.begin());
-        float high =  conv.hz2bark(*frequencies.end());
+        float low = conv.hz2bark(frequencies.at(0));
+        float high =  conv.hz2bark(frequencies.at(npoints-1));
         float bw = (high - low) / (nfilts + 1);
         centerF = conv.linspace(1.f, (float)nfilts, nfilts);
         FloatVectorOperations::multiply(centerF.data(), bw, nfilts);
         FloatVectorOperations::add(centerF.data(), low, nfilts);
+       // FloatVectorOperations::multiply(centerF.data(), 100, nfilts);
+
 
         vector<float> infr = centerF;
         vector<float> supr = centerF;
         FloatVectorOperations::add(infr.data(), -bw, nfilts);
         FloatVectorOperations::add(supr.data(), bw, nfilts);
         
-        for (int i = 0; ++i < centerF.size();) {
+        for (int i = 0; i < centerF.size(); i++) {
             infr[i] = conv.bark2hz(infr[i]);
             supr[i] = conv.bark2hz(supr[i]);
             centerF[i] = conv.bark2hz(centerF[i]);
         }
 
-        infr[0] = (float)*frequencies.begin();
-        supr[supr.size()-1] = (float)*frequencies.end();
+        infr[0] = (float) frequencies.at(0);
+        supr[supr.size()-1] = (float) frequencies.at(npoints-1);
         int m = 1;
-        vector<float> frequencies = (vector<float>) *frequencies.data();
+        //vector<float> frequencies = (vector<float>) *frequencies.data();
 
-        for (int b = 0; ++b < nfilts;) {
+        for (int b = 0; b < nfilts; b++) {
 
        /*     interp.process(memorySize,
                 frequencies.data(),
@@ -96,12 +98,14 @@ public:
             vector<float> buffer, partOfFreqs;
             buffer.resize(nfilts);
             partOfFreqs.resize(nfilts);
-            for (int i = 0; ++i < n;) {
+            for (int i = 0; i < n; i++) {
                 partOfFreqs[i] = frequencies[il + i];
             }
             //copy(frequencies.at(il), frequencies.at(ih), partOfFreqs);
             buffer = interpolateYvector(xw, yw, partOfFreqs, 0);
-            values[b] = buffer;
+            vector<float> ptr = values.at(b);
+            copy(buffer.begin(), buffer.end(), values.at(b).begin()+il);
+            //values[b] = buffer;
             //copy(buffer.at(0), buffer.at(nfilts-1), std::back_inserter(values[b][]));
 
 
@@ -131,8 +135,8 @@ private:
     Converter conv;
 
     const int findx(vector<float> X, float val) {
-        int minDistIndex=-1;
-        for (int i = 0; ++i < X.size();) {
+        int minDistIndex=0;
+        for (int i = 0; i < X.size(); i++) {
             X[i] = abs(X[i] - val);
             if (X[i]<X[minDistIndex]) minDistIndex = i;
         }
