@@ -106,21 +106,20 @@ void TheMaskerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     
     auto numSamples = buffer.getNumSamples();
 
-    auto mainBuffer = getBusBuffer(buffer, true, 0);
-    auto scBuffer = getBusBuffer(buffer, true, 1);
-
     auxBuffer.clear();
 
-    
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i) {
         buffer.clear(i, 0, buffer.getNumSamples());
     }
+
+    auto mainBuffer = getBusBuffer(buffer, true, 0);
+    auto scBuffer = getBusBuffer(buffer, true, 1);
      
     const AudioBuffer<float>& scSource = scBuffer.getNumChannels() ? scBuffer : mainBuffer;
     const int numScChannels = scSource.getNumChannels();
 
-    for (int ch = 0; ch < numScChannels; ++ch) {
-        auxBuffer.addFrom(ch, 0, scSource, ch, 0, numSamples, 1 / numScChannels);
+    for (int ch = 0; ch < numScChannels; ch++) {
+        auxBuffer.addFrom(ch, 0, scSource, ch, 0, numSamples, 1.0f / numScChannels); //rimettere il gain a 1?
     }
     
 

@@ -46,8 +46,8 @@ public:
         vector<float> res;
         size_t length = in1.size();
         res.resize(length);
-        for (int i = 0; ++i < length;) {
-            for (int k = 0; ++k < in2.size();) {
+        for (int i = 0; i < length; i++) {
+            for (int k = 0; k < in2.size();k++) {
                 res[i] = res[i] + in1[i][k] * in2[k];
             }
         }

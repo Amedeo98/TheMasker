@@ -16,6 +16,7 @@ using namespace std;
 #include "Curve.h"
 #include "FilterBank.h"
 #include "Converters.h"
+#include "FilterCascade.h"
 #include "Analyser.h"
 
 
@@ -45,16 +46,16 @@ public:
         numInChannels = inCh;
         numOutChannels = outCh;
         frequencies = _frequencies;
-        atq = getATQ(fCenters);
         spreadingMtx = getSpreadingFunc(maxFreq, spread_exp);
         fbank.getFilterBank(frequencies);
-        fCenters = fbank.getFrequencies();
         fbank.setConverter(conv);
+        fCenters = fbank.getFrequencies();
+        atq = getATQ(fCenters);
         rel_threshold.getRelativeThreshold(fs, fbank, spreadingMtx);
-        inSpectrum.prepareToPlay(sampleRate, fbank, spreadingMtx, true, false);
-        scSpectrum.prepareToPlay(sampleRate, fbank, spreadingMtx, true, true);
-        outSpectrum.prepareToPlay(sampleRate, fbank, spreadingMtx, false, false);
-        //filters.prepareToPlay(sampleRate, samplesPerBlock, numChannels);
+        inSpectrum.prepareToPlay(sampleRate, fbank, spreadingMtx, fCenters, true, false);
+        scSpectrum.prepareToPlay(sampleRate, fbank, spreadingMtx, fCenters, true, true);
+        outSpectrum.prepareToPlay(sampleRate, fbank, spreadingMtx, frequencies, false, false);
+        filters.prepareToPlay(sampleRate, samplesPerBlock, numInChannels, fCenters);
 
     }
 
@@ -63,8 +64,6 @@ public:
         inSpectrum.releaseResources(1000);
         scSpectrum.releaseResources(1000);
         outSpectrum.releaseResources(1000);
-        //inputAnalyser.stopThread(1000);
-        //outputAnalyser.stopThread(1000);
     }
 
     void processBlock(AudioBuffer<float>& mainBuffer, AudioBuffer<float>& scBuffer)
@@ -90,7 +89,7 @@ public:
 
         
        if (wasBypassed) {
-            //filters.reset();
+            filters.reset();
             wasBypassed = false;
         }
 
@@ -99,8 +98,6 @@ public:
         applyGain(mainBuffer, outGain);
         //if (getActiveEditor() != nullptr)
         outSpectrum.processBlock(mainBuffer, 0, numOutChannels);
-
-        //outputAnalyser.addAudioData(mainBuffer, 0, 2);
     }
 
 
@@ -158,15 +155,16 @@ private:
 
     AbsoluteThreshold getATQ(vector<float>& f)
     {
-        vector<float> values;
-        for (int i=0; i < f.size(); ++i)
+        vector<float> values(f.size());
+        for (int i=0; i < f.size(); i++)
         {
             //   matlab function: absThresh=3.64*(f./1000).^-0.8-6.5*exp(-0.6*(f./1000-3.3).^2)+.00015*(f./1000).^4; % edited function (reduces the threshold in high freqs)
             values[i] = 3.64 * pow((f[i] / 1000), -0.8) - 6.5 * exp(-0.6 * pow(f[i] / 1000 - 3.3, 2)) + 0.00015 * pow(f[i] / 1000, 4);
         }
         float minimum = FloatVectorOperations::findMinimum(values.data(), values.size());
         FloatVectorOperations::add(values.data(), -minimum, values.size());
-        return atq.getATQ(values, f);
+        atq.setATQ(values, f);
+        return atq;
 
     }
 
@@ -187,7 +185,6 @@ private:
         float maxbark = conv.hz2bark(maxF);
         float alphaScaled = spread_exp / 20.f;
         vector<float> spreadFuncBarkdB(2 * nfilts);
-        //spreadFuncBarkdB->resize(2 * nfilts);
         spreadingMtx.resize(nfilts, vector<float>(nfilts));
         vector<float> spreadFuncBarkVoltage(2 * nfilts);
         vector<float> ascendent = conv.linspace(-maxbark * fbdb, -2.5f, nfilts);
@@ -201,25 +198,13 @@ private:
         for (int i = 0; i < 2*nfilts; i++) 
         {
             spreadFuncBarkVoltage[i] = std::pow(10.0f, spreadFuncBarkdB[i]);
-            //spreadFuncBarkVoltage[i + nfilts] = std::pow(10.0f, spreadFuncBarkdB[i + nfilts]);
         }
         for (int i = 0; i < nfilts; i++) {
-           /* spreadFuncBarkVoltage[i] = std::pow(10.0f, spreadFuncBarkdB[i]);
-            spreadFuncBarkVoltage[i+nfilts] = std::pow(10.0f, spreadFuncBarkdB[i+nfilts]);*/
 
             vector<float> temp(nfilts);
             vector<float>::const_iterator first = spreadFuncBarkVoltage.begin() + nfilts - i - 1;
             vector<float>::const_iterator last = spreadFuncBarkVoltage.begin()+ 2 * nfilts - i - 2;
-                
-            //temp->assign(first, last);
-            
             copy(spreadFuncBarkVoltage.begin() + nfilts - i - 1, spreadFuncBarkVoltage.begin() + 2 * nfilts - i - 1, temp.begin()); //
-
-            /*for (int j = 0; j < nfilts; j++)
-            {
-                spreadingMtx[i] = temp;
-            }*/
-            //copy(temp.begin(), temp.end(), spreadingMtx.begin()+i); //
             spreadingMtx[i] = temp;
             //temp.~vector;
         }
@@ -257,7 +242,7 @@ private:
     AudioFD scSpectrum;
     AudioFD outSpectrum;
 
-    //FilterCascade filters;
+    FilterCascade filters;
 
     bool wasBypassed = true;
 

@@ -2715,6 +2715,9 @@
     <ClInclude Include="..\..\Source\FilterBank.h">
       <Filter>TheMasker\Source\DSP</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\SimpleFilter.h">
+      <Filter>TheMasker\Source\DSP</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\PluginProcessor.h">
       <Filter>TheMasker\Source</Filter>
     </ClInclude>

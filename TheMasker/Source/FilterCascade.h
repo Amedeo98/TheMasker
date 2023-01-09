@@ -11,19 +11,20 @@
 #pragma once
 #include <JuceHeader.h>
 #include "Converters.h"
+#include "SimpleFilter.h"
 
 
-//template <typename F>
+
 class FilterCascade {
 public:
     FilterCascade(){}
     ~FilterCascade(){}
 
-    void prepareToPlay(double sampleRate, int samplesPerBlock, int numChannels) {
+    void prepareToPlay(double sampleRate, int samplesPerBlock, int numChannels, vector<float> freqs) {
         
-        //filters.resize(nfilts);
-        for (int f = 0; ++f < nfilts;) {
-            //filters[f].prepareToPlay(sampleRate, samplesPerBlock, numChannels);
+        filters.resize(nfilts);
+        for (int f = 0; f < nfilts; f++) {
+            filters[f].prepareToPlay(sampleRate, samplesPerBlock, numChannels);
         }
     }
 
@@ -34,35 +35,12 @@ public:
     void filterBlock(AudioBuffer<float>& mainBuffer) {
 
     }
-private:
-//vector<Filter> filters;
-};
-
-class Filter {
-public:
-    Filter(){}
-    ~Filter(){}
 
     void reset() {
+        for (int f = 0; f < nfilts; f++) {
+            filters[f].reset();
+        }
     }
-    
-    void prepareToPlay(double sampleRate, int samplesPerBlock, int numChannels) {
-        filter.reset();
-
-        juce::dsp::ProcessSpec spec;
-        spec.maximumBlockSize = samplesPerBlock;
-        spec.sampleRate = sampleRate;
-        spec.numChannels = numChannels;
-        filter.prepare(spec);
-        filter.setType(juce::dsp::StateVariableTPTFilterType::bandpass);
-    }
-
-    void updateGain() {
-
-    }
-
-    using F = juce::dsp::StateVariableTPTFilter<float>;
-
 private:
-    F filter;
+vector<Filter> filters;
 };

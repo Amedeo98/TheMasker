@@ -2215,6 +2215,7 @@
     <ClInclude Include="..\..\Source\Curve.h"/>
     <ClInclude Include="..\..\Source\DynamicEQ.h"/>
     <ClInclude Include="..\..\Source\FilterBank.h"/>
+    <ClInclude Include="..\..\Source\SimpleFilter.h"/>
     <ClInclude Include="..\..\Source\PluginProcessor.h"/>
     <ClInclude Include="..\..\Source\PluginEditor.h"/>
     <ClInclude Include="C:\Users\nikid\JUCE\modules\juce_audio_basics\audio_play_head\juce_AudioPlayHead.h"/>

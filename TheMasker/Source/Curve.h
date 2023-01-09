@@ -61,11 +61,11 @@ public:
 
 class AbsoluteThreshold : public Curve {
 public:
-    AbsoluteThreshold getATQ(std::vector<float>& y, std::vector<float>& x) 
+    void setATQ(std::vector<float> y, std::vector<float> x) 
     {
         setYValues(y);
         setXValues(x);
-        return *this;
+        
     }
 
 
@@ -74,7 +74,7 @@ public:
         juce::FloatVectorOperations::multiply(values.data(), UIatqWeight, curveSize);
         juce::FloatVectorOperations::multiply(values.data(), atqLift, curveSize);
         juce::FloatVectorOperations::add(values.data(), minDBFS, curveSize);
-        FloatVectorOperations::max(values.data(), values.data(), 0.0f, curveSize);
+        FloatVectorOperations::clip(values.data(), values.data(), minDBFS, 0.0f, curveSize);
         setYValues(values);
     }
 private:
@@ -90,14 +90,15 @@ private:
 class AudioFD : public Curve {
 public:
 
-    void prepareToPlay(float sampleRate, FilterBank& filterbank, vector<vector<float>>& spreadingMatrix, bool decim, bool spread){
+    void prepareToPlay(float sampleRate, FilterBank& filterbank, vector<vector<float>>& spreadingMatrix, vector<float> freqs, bool decim, bool spread){
         setDecimated(decim);
+        setXValues(freqs);
         spreaded = spread;
         analyser.setupAnalyser(int(sampleRate), float(sampleRate), fbank, spreadingMtx);
         fbank = filterbank;
         spreadingMtx = spreadingMatrix;
         setConverter(fbank.getConverter());
-        //decim ? yValues.resize(nfilts) : yValues.resize(npoints);
+        decim ? yValues.resize(nfilts) : yValues.resize(npoints);
     }
 
 
@@ -137,7 +138,7 @@ public:
               std::multiplies<float>()); */
         }
 
-        for (int i = 0; ++i < temp.size();) {
+        for (int i = 0; i < temp.size(); i++) {
             temp[i] = real(conv.amp2db(temp[i]));
         }
         setYValues(temp);
@@ -205,7 +206,7 @@ public:
         std::vector<float> newValues;
         newValues.resize(yValues.size());
         THclip.resize(threshold.curveSize);
-        for (int i = 0; ++i < threshold.curveSize;) {
+        for (int i = 0; i < threshold.curveSize; i++) {
             THclip[i] = (1.0f + tanh((threshold.yValues[i] - gateThresh) / gateKnee)) / 2.0f;
         }
         std::transform(yValues.begin(), yValues.end(),
@@ -216,7 +217,7 @@ public:
 
     void modulateDelta(float UIcomp, float UIexp, float UIsl, float UImix) {
         //std::vector<float> monoValues;
-        for (int i = 0; ++i < curveSize;) {
+        for (int i = 0; i < curveSize; i++) {
             float& temp = yValues[i];
             //monoValues = mean(yValues);
             //temp = UIsl * monoValues + (1-UIsl) * temp;
